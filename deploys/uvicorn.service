@@ -1,0 +1,22 @@
+[Unit]
+Description=uvicorn daemon
+Requires=uvicorn.socket
+After=network.target
+
+[Service]
+PIDFile=/home/ubuntu/run/uvicorn/pid
+User=ubuntu
+Group=www-data
+WorkingDirectory=/home/ubuntu/obdev2018
+Environment="DJANGO_SETTINGS_MODULE=config.settings.production"
+ExecStart=/home/ubuntu/obdev2018/venv_obrisk/bin/gunicorn \
+          -k uvicorn.workers.UvicornWorker \
+          --workers 6 \
+          --bind unix:/run/uvicorn.sock \
+          --log-level info \
+	  --access-logfile '/home/ubuntu/logs/gunicorn-access.log' \
+	  --error-logfile '/home/ubuntu/logs/gunicorn-error.log' \
+          config.asgi:application
+
+[Install]
+WantedBy=multi-user.target
