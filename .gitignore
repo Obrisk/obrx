@@ -64,6 +64,7 @@ media/
 *.onpremises*
 
 venv_obrx/
+venv_obrisk/
 staticfiles/
 .idea
 
