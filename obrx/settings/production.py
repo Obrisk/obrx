@@ -70,7 +70,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'taggit',
     'wechat_bot',
+    'users',
+    'classifieds',
     'django_oss_storage'
 ]
 
@@ -288,7 +291,7 @@ SECRET_KEY = env('SECRET_KEY')
 
 AWS_LOCAL_IP = get_ec2_instance_ip()
 
-ALLOWED_HOSTS = [AWS_LOCAL_IP, 'www.obrisk.com', 'obrisk.com', 'in.obrisk.com']
+ALLOWED_HOSTS = [AWS_LOCAL_IP, 'www.obrisk.cn', 'obrisk.cn']
 
 # GENERAL
 # ------------------------------------------------------------------------------
@@ -414,7 +417,7 @@ if env.bool('USE_S3_STATICFILES'):
     STATICFILES_LOCATION = f'static/{STATIC_VERSION}'
 
     #The value from docs is 'storages.backends.s3boto3.S3Boto3Storage'
-    STATICFILES_STORAGE = 'config.custom_storages.StaticStorage'
+    STATICFILES_STORAGE = 'utils.custom_storages.StaticStorage'
 
 else:
     STATICFILES_STORAGE = 'django_oss_storage.backends.OssStaticStorage'

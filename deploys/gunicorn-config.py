@@ -5,11 +5,11 @@
 #https://github.com/benoitc/gunicorn/blob/29f0394cdd381df176a3df3c25bb3fdd2486a173/examples/example_config.py
 
 #This is default. Strict but the best, let users retry on dead request connections
-timeout = 30
+timeout = 120
 
 #Depending on the number of cpu, also remember uvicorn is running so requests are split
 #This number is for 2 vCPU instance. I have to deploy same instances for easy managing.
-workers = 6
+workers = 3
 
 pidfile = '/home/ubuntu/run/gunicorn/pid'
 
