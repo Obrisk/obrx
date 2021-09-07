@@ -1,0 +1,49 @@
+psycopg2>=2.7.7  # https://github.com/psycopg/psycopg2
+pytz>=2018.5  # https://github.com/stub42/pytz
+redis>=2.10.6  # https://github.com/antirez/redis
+whitenoise>=3.3.1  # https://github.com/evansd/whitenoise
+environ>=1.0    #https://files.pythonhosted.org/packages/29/e4/6f448fcce1649a1f0f265e20bd88b7c8ff36e265657604b920240045928b/environ-1.0.tar.gz
+oss2  #https://github.com/aliyun/aliyun-oss-python-sdk
+aliyun-python-sdk-sts>=3.0.1 #https://github.com/aliyun/aliyun-openapi-python-sdk
+
+celery>=4.3.0 #https://github.com/celery/celery
+boto3>=1.6.2  # pyup: update minor  # https://github.com/boto/boto3
+werobot #https://github.com/offu/WeRoBot
+awesome-slugify>=1.6.5  # https://github.com/dimka665/awesome-slugify
+
+
+# Django
+# ------------------------------------------------------------------------------
+django==3.2  # pyup: # https://www.djangoproject.com/
+django-environ>=0.4.4  # https://github.com/joke2k/django-environ
+django-redis>=4.9.0  # https://github.com/niwinz/django-redis
+django_celery_beat>=1.5.0 #https://github.com/celery/django-celery-beat
+djangorestframework #https://github.com/encode/django-rest-framework
+django-ipware #https://github.com/un33k/django-ipware
+xmltodict #https://github.com/martinblech/xmltodict
+dicttoxml 
+django-taggit>=0.22.2  # https://github.com/alex/django-taggit
+wechatpy #https://github.com/wechatpy/wechatpy
+#requests-aws4auth #https://pypi.org/project/requests-aws4auth/
+django-phonenumber-field>=2.1.0  #https://github.com/stefanfoulis/django-phonenumber-field
+phonenumbers>=p8.10.4  #https://github.com/stefanfoulis/django-phonenumber-field
+aliyun-python-sdk-geoip==1.0.4 #https://pypi.org/project/aliyun-python-sdk-geoip
+celery>=4.3.0 #https://github.com/celery/celery
+
+#Below is a fork for django-elasticsearch-dsl==7.1.0 #https://github.com/sabricot/django-elasticsearch-dsl
+git+https://github.com/elkd/django-es-dsl.git
+
+
+gevent==1.2.2  # https://github.com/gevent/gevent
+gunicorn==19.9.0  #https://gunicorn.org/
+uvicorn==0.6.1 #https://github.com/encode/uvicorn
+
+#https://serverfault.com/questions/635100/django-conn-max-age-persists-connections-but-doesnt-reuse-them-with-postgresq
+django-db-geventpool==3.1.0   #https://github.com/jneight/django-db-geventpool
+
+sentry_sdk==1.0.0 #https://sentry.io/obrisk/obrisk-e7/getting-started/python-django/
+
+#Below oss package will install django-oss-storage 1.2 better than aliyun package
+#git+https://gitee.com/enlangs/django-oss-storage.git #https://gitee.com/enlangs/django-oss-storage
+django-oss-storage
+django-storages==1.6.5  # https://github.com/jschneier/django-storages
