@@ -44,33 +44,23 @@ from django.http import (
 )
 from django.db.models import IntegerField, Case, When, Value
 
-from allauth.account.views import (
-    SignupView, LoginView,
-    _ajax_response,
-    PasswordResetFromKeyView as AllauthPasswordResetFromKeyView
-)
-
 from slugify import slugify
-from allauth.account.forms import UserTokenForm
-from allauth.account.utils import user_pk_to_url_str, url_str_to_user_pk
-from allauth.utils import build_absolute_uri
 from phonenumbers import PhoneNumber
-from friendship.models import Friend, Follow
 from rest_framework.decorators import api_view
 
-from obrisk.users.serializers import UserSerializer
-from obrisk.utils.helpers import ajax_required
-from obrisk.utils.images_upload import bucket, bucket_name
-from obrisk.users.wechat_authentication import WechatLogin
-from obrisk.users.wechat_config import CHINA_PROVINCES
-from obrisk.users.tasks import update_prof_pic_async
+from users.serializers import UserSerializer
+from utils.helpers import ajax_required
+from utils.images_upload import bucket, bucket_name
+from users.wechat_authentication import WechatLogin
+from users.wechat_config import CHINA_PROVINCES
+from users.tasks import update_prof_pic_async
 from .forms import (
         UserForm, EmailSignupForm, CusSocialSignupForm,
         PhoneRequestPasswordForm, PhoneResetPasswordForm,
         SocialSignupCompleteForm, VerifyAddressForm)
 from .models import User
 from .phone_verification import send_sms
-from obrisk.classifieds.models import Classified
+from classifieds.models import Classified
 
 try:
     from django.contrib.auth import get_user_model
@@ -87,13 +77,6 @@ SMS_SEND_RETRY = 0
 class SocialPostView(FormView):
     form_class = CusSocialSignupForm
     template_name = 'socialaccount/signup.html'
-
-
-#There is no need to override this view. 
-#By default All-auth directly login users when they signup.
-class EmailSignUp(SignupView):
-    form_class = EmailSignupForm
-    template_name = 'account/email_signup.html'
 
 
 def aliyun_send_code(random, phone_number):
@@ -253,28 +236,6 @@ def phone_password_reset(request):
     else:
         form = PhoneRequestPasswordForm()
         return render(request, 'account/phone_password_reset.html', {'form': form})
-
-
-@method_decorator(ensure_csrf_cookie, name="get")
-class UserDetailView(DetailView):
-    model = User
-    # These next two lines tell the view to index lookups by username
-    slug_field = 'username'
-    slug_url_kwarg = 'username'
-
-    def get_context_data(self, **kwargs):
-        context = super(UserDetailView, self).get_context_data(**kwargs)
-
-        if self.request.user.is_authenticated:
-            user = self.request.user
-            sent_requests = Friend.objects.sent_requests(user)
-            in_coming_reqst = Friend.objects.requests(user)
-
-            context['pending'] = [u.to_user for u in sent_requests]
-            context['pended'] = [u.from_user for u in in_coming_reqst]
-            context['friends'] = Friend.objects.friends(user)
-
-        return context
 
 
 class UserRedirectView(LoginRequiredMixin, RedirectView):
@@ -487,136 +448,6 @@ def send_code_sms(request):
             'success': False,
             'error_message':"This request is invalid!"
         })
-
-
-@ajax_required
-@require_http_methods(["GET", "POST"])
-def phone_verify(request):
-    if request.method == "GET":
-        code = request.GET.get("code")
-        phone_no = request.GET.get("phone_no")
-
-        if phone_no is not None and code is not None:
-            try:
-                saved_code = cache.get(str(phone_no))
-            except:
-                return JsonResponse({
-                    'error_message': "The verification code is invalid!"})
-            else:
-                if saved_code == code:
-                    if str(request.META.get(
-                            'HTTP_REFERER'
-                            )).endswith("/users/phone-password-reset/"):
-                        try:
-                            user = get_users(phone_no)
-                        except:
-                            return JsonResponse({'success': False,
-                                                'error_message': "Sorry \
-                                                        there is a problem with this account. \
-                                                        Please contact us!",
-                                                'phone_no': phone_no })
-                        else:
-                            if user:
-                                token = default_token_generator.make_token(user)
-                                # current_site = get_current_site(request)
-                                # save it to the password reset model
-                                # password_reset = PasswordReset(user=user, temp_key=temp_key)
-                                # password_reset.save()
-
-                                # send the password reset email
-                                path = reverse("users:phone_ps_reset_confirm",
-                                            kwargs=dict(uidb36=user_pk_to_url_str(user),
-                                                        key=token))
-                                url = build_absolute_uri(request, path)
-                                return JsonResponse({'success': True, 'url':url })
-                            else:
-                                return JsonResponse({'success': False,
-                                                     'error_message': "Sorry \
-                                                             there is a problem with this account. \
-                                                             Please contact us!"})
-                    else:
-                        return JsonResponse({'success': True})
-
-                else:
-                    return JsonResponse({'success': False,
-                        'error_message': "The verification code is not correct!"})
-            return JsonResponse({'success': False})
-        else:
-            return JsonResponse({'success': False,
-                'error_message': "The phone number or the code is empty!"})
-    else:
-        return JsonResponse({'success': False,
-            'error_message': "This request is invalid!"})
-
-
-class PasswordResetFromKeyView(AllauthPasswordResetFromKeyView):
-
-    def dispatch(self, request, uidb36, key, **kwargs):
-        self.request = request
-        self.key = key
-        token_form = UserTokenForm(
-            data={'uidb36': uidb36, 'key': self.key})
-
-        if token_form.is_valid():
-            # Store the key in the session and redirect to the
-            # password reset form at a URL without the key. That
-            # avoids the possibility of leaking the key in the
-            # HTTP Referer header.
-            # (Ab)using forms here to be able to handle errors in XHR #890
-            token_form = UserTokenForm(
-                data={'uidb36': uidb36, 'key': self.key})
-            if token_form.is_valid():
-                self.reset_user = token_form.reset_user
-                # The super must be called with FormView or the link will be invalid. Ignore the linter
-                return super(FormView, self).dispatch(request, uidb36, self.key, **kwargs)
-
-        else:
-            if str(request.META.get('HTTP_REFERER')).endswith("/users/phone-password-reset/"):
-                self.reset_user = token_form.reset_user
-                return super(FormView, self).dispatch(request, uidb36, self.key, **kwargs)
-
-            self.reset_user = None
-            response = self.render_to_response(
-                self.get_context_data(token_fail=True)
-            )
-
-            return _ajax_response(self.request, response, form=token_form)
-
-
-class PhonePasswordResetConfirmView(FormView):
-    template_name = "account/phone_ps_reset_confirm.html"
-    form_class = PhoneResetPasswordForm
-    success_url = reverse_lazy("classifieds:list")
-
-    def post(self, request, uidb36=None, key=None, *arg, **kwargs):
-        """
-        View that checks the hash in a password reset link and presents a
-        form for entering a new password.
-        """
-        UserModel = get_user_model()
-        form = self.form_class(request.POST)
-        assert uidb36 is not None and key is not None  # checked by URLconf
-        try:
-            uid = url_str_to_user_pk(uidb36)
-            user = UserModel._default_manager.get(pk=uid)
-        except (TypeError, ValueError, OverflowError, UserModel.DoesNotExist):
-            user = None
-
-        if user is not None and default_token_generator.check_token(user, key):
-            if form.is_valid():
-                new_password= form.cleaned_data['new_password2']
-                user.set_password(new_password)
-                user.save()
-                messages.success(request, 'Password has been updated!')
-                login(request, user, backend='allauth.account.auth_backends.AuthenticationBackend')
-                return self.form_valid(form)
-
-            else:
-                messages.error(request, 'Password reset has not been unsuccessful.')
-                return self.form_invalid(form)
-        else:
-            messages.error(request,'The reset password link is no longer valid.')
-            return self.form_invalid(form)
 
 
 
@@ -964,35 +795,6 @@ def complete_wechat_reg(request, **kwargs):
             'error_message': _(
                 f'Input error on {error_msg}')
             })
-
-
-@ajax_required
-@api_view(['GET'])
-def complete_authentication(request):
-    """
-    This view is to upadate social users' phone number and password
-    as they are required to be authorized completely
-    """
-
-    usr = request.user
-    user = User.objects.get(username=usr)
-
-    # getting socialusers without phone_number
-    if user.socialaccount_set.all() and not user.phone_number:
-        user_inputs = request.query_params
-        serializer = UserSerializer(user, data=user_inputs)
-
-        if serializer.is_valid():
-            serializer.save()
-            return redirect("classifieds:list")
-
-        else:
-            return JsonResponse({"status": "403",
-                "message": "Please enter valid inputs"})
-
-    else:
-        return redirect_after_login(request)
-
 
 
 class VerifyAddressView(LoginRequiredMixin, UpdateView):

@@ -70,8 +70,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "allauth",
-    "allauth.account",
     'taggit',
     'wechat_bot',
     'users',
@@ -137,7 +135,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 
-FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
+#FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
 
 # MIGRATIONS
 # ------------------------------------------------------------------------------
@@ -151,8 +149,6 @@ AUTH_USER_MODEL = "users.User"
 # https://docs.djangoproject.com/en/dev/ref/settings/#authentication-backends
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
-    "allauth.account.auth_backends.AuthenticationBackend",
-    "users.phone_authentication.PhoneAuthBackend",
 ]
 
 
@@ -203,13 +199,6 @@ ADMINS = [
 # https://docs.djangoproject.com/en/dev/ref/settings/#managers
 MANAGERS = ADMINS
 
-# django-allauth
-# ------------------------------------------------------------------------------
-# https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_ALLOW_REGISTRATION = env.bool("ACCOUNT_ALLOW_REGISTRATION", True)
-
-ACCOUNT_AUTHENTICATION_METHOD = "username_email"
-
 # This is because of overiding login forms on users.forms
 # options are False and True for the remember me box
 SESSION_REMEMBER = None
@@ -224,8 +213,6 @@ ACCOUNT_PRESERVE_USERNAME_CASING = True
 ACCOUNT_USERNAME_MIN_LENGTH = 3
 
 ACCOUNT_USERNAME_MAX_LENGTH = 18
-
-
 
 ACCOUNT_USERNAME_BLACKLIST = [
     "AnonymousUser",
@@ -293,7 +280,7 @@ SECRET_KEY = env('SECRET_KEY')
 
 AWS_LOCAL_IP = get_ec2_instance_ip()
 
-ALLOWED_HOSTS = [AWS_LOCAL_IP, 'www.obrisk.cn', 'obrisk.cn']
+ALLOWED_HOSTS = [AWS_LOCAL_IP, '52.83.250.12',  'www.obrisk.cn', 'obrisk.cn']
 
 # GENERAL
 # ------------------------------------------------------------------------------
