@@ -1,4 +1,7 @@
+
+argon2-cffi>=18.1.0  # https://github.com/hynek/argon2_cffi
 psycopg2>=2.7.7  # https://github.com/psycopg/psycopg2
+awesome-slugify>=1.6.5  # https://github.com/dimka665/awesome-slugify
 pytz>=2018.5  # https://github.com/stub42/pytz
 redis>=2.10.6  # https://github.com/antirez/redis
 whitenoise>=3.3.1  # https://github.com/evansd/whitenoise
@@ -9,7 +12,6 @@ aliyun-python-sdk-sts>=3.0.1 #https://github.com/aliyun/aliyun-openapi-python-sd
 celery>=4.3.0 #https://github.com/celery/celery
 boto3>=1.6.2  # pyup: update minor  # https://github.com/boto/boto3
 werobot #https://github.com/offu/WeRoBot
-awesome-slugify>=1.6.5  # https://github.com/dimka665/awesome-slugify
 
 
 # Django
