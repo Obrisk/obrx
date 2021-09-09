@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import TemplateView
 
 from werobot.contrib.django import make_view
 from wechat_bot.views import wxbot
@@ -23,5 +24,12 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('biR07IOg1Xgy66Hpypet-sh903821adua01d3d8l/',
         make_view(wxbot), name="wechat_users"
-    )
+    ),
+    path('MP_verify_HTQQQmxtxv6VNTtN.txt/',
+        TemplateView.as_view(
+            template_name='MP_verify_HTQQQmxtxv6VNTtN.txt',
+            content_type='text/plain'
+        ),
+        name="wechat_mp_verify"
+    ),
 ]

@@ -31,6 +31,7 @@ def hello(message):
 @wxbot.text
 def handle_text(message, session):
     userid = message.source
+    logging.error(f'Obrx server: ID: {userid}')
     user = User.objects.filter(
             wechat_openid=userid
         )
@@ -42,12 +43,12 @@ def handle_text(message, session):
 
             token = get_access_token()
             if token is None:
-                logging.error(f'Wxbot failed to get access token')
+                logging.error('Wxbot failed to get access token')
                 return ''
 
             user_info = get_user_info(token, userid)
             if user_info is None:
-                logging.error(f'Wxbot failed to get user info')
+                logging.error('Wxbot failed to get user info')
                 return ''
 
             picture = user_info['headimgurl']

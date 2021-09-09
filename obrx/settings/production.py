@@ -92,7 +92,7 @@ ROOT_URLCONF = 'obrx.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [str(APPS_DIR.path("templates")), ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
