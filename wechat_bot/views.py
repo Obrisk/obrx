@@ -11,14 +11,16 @@ from utils.wx_config import get_access_token, get_user_info
 from users.tasks import upload_image
 
 
-db = redis.Redis(settings.REDIS_URL)
-session_storage = RedisStorage(db, prefix="wxbot_")
+#db = redis.Redis(settings.REDIS_URL)
+#correct way is:
+#db = redis.Redis(host=env('REDIS_HOST'), port=6379)
+#session_storage = RedisStorage(db, prefix="wxbot_")
 wxbot = WeRoBot(
             token=env('WXBOT_TOKEN'),
             app_id=env('WECHAT_APPID'),
             app_secret=env('WECHAT_APPSECRET'),
-            enable_session=True,
-            session_storage=session_storage
+            enable_session=True
+            #session_storage=session_storage
         )
 client=wxbot.client
 
