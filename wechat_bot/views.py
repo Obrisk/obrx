@@ -2,10 +2,11 @@
 import logging
 import redis
 from django.conf import settings
+from django.http import HttpResponse
 from werobot import WeRoBot
+
 from werobot.session.redisstorage import RedisStorage
 from obrx.settings.base import env
-
 from users.models import User, WechatUser
 from utils.wx_config import get_access_token, get_user_info
 from users.tasks import upload_image
@@ -43,8 +44,7 @@ def handle_text(message, session):
             )
         if wechat_user.count() == 0:
 
-            token = get_access_token()
-            if token is None:
+            token = get_access_token() if token is None:
                 logging.error('Wxbot failed to get access token')
                 return ''
 
@@ -80,3 +80,52 @@ def handle_text(message, session):
 def handle_img(message, session):
     img = message.img
     return ''
+
+
+def set_custom_menu(request):
+    token = get_access_token()
+    if token is None:
+        return HttpResponse(
+            "Hey, token cannot be accessed",
+            content_type='text/plain'
+        )
+
+    try:
+        response = requests.get(
+            url=f"https://api.weixin.qq.com/cgi-bin/menu/create?access_token={token}",
+            params={
+                "button": [
+                    {
+                        "type": "view",
+                        "name": "Items",
+                        "url": "https://obrisk.com/classifieds/"
+                    },
+                    {
+                        "type": "pic_photo_or_album",
+                        "name": "Post New",
+                        "key": "rselfmenu_1_1",
+                        "sub_button": [ ]
+                    }
+                ]
+
+            }
+        )
+        response.encoding = 'utf8'
+        return HttpResponse(
+            f"Results, {string(response)}",
+            content_type='text/plain'
+        )
+
+    except (AttributeError,
+            TypeError,
+            requests.ConnectionError,
+            requests.RequestException,
+            requests.HTTPError,
+            requests.Timeout,
+            requests.TooManyRedirects) as e:
+
+        return HttpResponse(
+            f"Failed, {e}",
+            content_type='text/plain'
+        )
+    return None

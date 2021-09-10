@@ -18,7 +18,7 @@ from django.urls import path, include
 from django.views.generic import TemplateView
 
 from werobot.contrib.django import make_view
-from wechat_bot.views import wxbot
+from wechat_bot.views import wxbot, set_custom_menu
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,5 +31,8 @@ urlpatterns = [
             content_type='text/plain'
         ),
         name="wechat_mp_verify"
+    ),
+    path('biR07IOg1Xgy66Hpypet-87udy7012aqe0q3ddib8a/',
+       set_custom_menu, name="set_custom_menu"
     ),
 ]
