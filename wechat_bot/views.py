@@ -44,7 +44,8 @@ def handle_text(message, session):
             )
         if wechat_user.count() == 0:
 
-            token = get_access_token() if token is None:
+            token = get_access_token()
+            if token is None:
                 logging.error('Wxbot failed to get access token')
                 return ''
 

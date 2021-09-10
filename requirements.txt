@@ -20,6 +20,7 @@ django==3.2  # pyup: # https://www.djangoproject.com/
 django-environ>=0.4.4  # https://github.com/joke2k/django-environ
 django-redis>=4.9.0  # https://github.com/niwinz/django-redis
 django_celery_beat>=1.5.0 #https://github.com/celery/django-celery-beat
+django-allauth>=0.35.0  # https://github.com/pennersr/django-allauth
 djangorestframework #https://github.com/encode/django-rest-framework
 django-ipware #https://github.com/un33k/django-ipware
 xmltodict #https://github.com/martinblech/xmltodict
