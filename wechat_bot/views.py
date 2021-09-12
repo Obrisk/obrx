@@ -44,6 +44,7 @@ def handle_text(message, session):
 @wxbot.image
 def handle_img(message, session):
     img = message.img
+    userid = message.source
     handle_wechat_user(userid)
 
     user = User.objects.filter(
