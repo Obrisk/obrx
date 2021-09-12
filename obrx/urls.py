@@ -32,7 +32,4 @@ urlpatterns = [
         ),
         name="wechat_mp_verify"
     ),
-    path('biR07IOg1Xgy66Hpypet-87udy7012aqe0q3ddib8a/',
-       set_custom_menu, name="set_custom_menu"
-    ),
 ]
