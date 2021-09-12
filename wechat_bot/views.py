@@ -1,6 +1,8 @@
 #wechat chatbot
 import logging
 import redis
+import requests
+import json
 from django.conf import settings
 from django.http import HttpResponse
 from werobot import WeRoBot
@@ -28,7 +30,7 @@ client=wxbot.client
 
 @wxbot.handler
 def hello(message):
-    return 'Hello World!'
+    return ''
 
 
 @wxbot.text
@@ -92,31 +94,52 @@ def set_custom_menu(request):
         )
 
     try:
-        response = requests.get(
+        data={
+            "button": [
+                {
+                    "type": "view",
+                    "name": "Items",
+                    "url": "https://obrisk.com/classifieds/"
+                },
+                {
+                    "type": "pic_photo_or_album",
+                    "name": "Post New",
+                    "key": "rselfmenu_1_1",
+                    "sub_button": [ ]
+                }
+            ]
+        }
+        response = requests.post(
             url=f"https://api.weixin.qq.com/cgi-bin/menu/create?access_token={token}",
-            params={
-                "button": [
-                    {
-                        "type": "view",
-                        "name": "Items",
-                        "url": "https://obrisk.com/classifieds/"
-                    },
-                    {
-                        "type": "pic_photo_or_album",
-                        "name": "Post New",
-                        "key": "rselfmenu_1_1",
-                        "sub_button": [ ]
-                    }
-                ]
-
-            }
+            data=json.dumps(data),
+            headers={'Content-Type': 'application/json'}
         )
         response.encoding = 'utf8'
+        if response.status_code != 200:
+            return HttpResponse(
+                "Http request to Wechat failed on Connection layer!",
+                content_type='text/plain'
+            )
+
+        try:
+            content = response.json()
+
+        except Exception as e:
+            return HttpResponse(
+                "Failed to Parse http response to JSON format",
+                content_type='text/plain'
+            )
+        if 'errcode' in content:
+            return HttpResponse(
+                f"Result:{str(content)}",
+                content_type='text/plain'
+            )
+
         return HttpResponse(
-            f"Results, {string(response)}",
+            f"Request failed without any readable response!",
             content_type='text/plain'
         )
-
+                                                                                            
     except (AttributeError,
             TypeError,
             requests.ConnectionError,
