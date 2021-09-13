@@ -61,12 +61,13 @@ class BasePicEvent(SimpleEvent):
             for item in message['SendPicsInfo']['PicList'].pop('item'):
                 self.pic_list.append({'pic_md5_sum': item['PicMd5Sum']})
         else:
-            self.pic_list.append(
-                {
-                    'pic_md5_sum': message['SendPicsInfo']
-                    ['PicList'].pop('item')['PicMd5Sum']
-                }
-            )
+            if self.count == 1:
+                self.pic_list.append(
+                    {
+                        'pic_md5_sum': message['SendPicsInfo']
+                        ['PicList'].pop('item')['PicMd5Sum']
+                    }
+                )
 
 
 class PicSysphotoEvent(BasePicEvent):
