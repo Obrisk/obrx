@@ -12,7 +12,7 @@ from werobot.session.redisstorage import RedisStorage
 from obrx.settings.base import env
 from utils.wx_config import get_access_token
 from users.models import User
-from wechat_bot.processing import handle_wechat_user, upload_classifieds
+from wechat_bot.processing import handle_wechat_user, upload_img
 
 
 url = urlparse(settings.REDIS_URL)
@@ -47,11 +47,7 @@ def handle_img(message, session):
     userid = message.source
     handle_wechat_user(userid)
 
-    user = User.objects.filter(
-            wechat_openid=userid
-        )
-    if user.count() > 0:
-        upload_classifieds(message, user.first())
+    upload_img(message)
     return ''
 
 
@@ -65,11 +61,7 @@ def handle_photo_or_album(message):
     userid = message.source
     handle_wechat_user(userid)
 
-    user = User.objects.filter(
-            wechat_openid=userid
-        )
-    if user.count() > 0:
-        upload_classifieds(message, user.first())
+    upload_img(message)
     return ''
 
 

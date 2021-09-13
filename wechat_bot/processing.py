@@ -40,5 +40,5 @@ def handle_wechat_user(userid):
         )
 
 
-def upload_classifieds(message, user):
+def upload_img(message):
     pass
