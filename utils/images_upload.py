@@ -228,14 +228,13 @@ def get_oss_auth(request, app_name=None):
             return JsonResponse(data)
 
 
-def multipleImagesPersist(request, images_list, app, obj):
+def multipleImagesPersist(images_list, app):
     ''' This func takes request, images list,
     app name (string) and app object
     and it validates the images list and stores them to the database.
     It returns images objects list if the images where saved to the db
     False if there is a validation problem '''
 
-    #The code from here onwards assume the first element of images list is undefined.
     #This variable will be used in the end of this code.
     tot_img_objs = len(images_list)
 
@@ -266,94 +265,68 @@ def multipleImagesPersist(request, images_list, app, obj):
 
         d = str(datetime.datetime.now())
 
-        if app == 'classifieds':
-            img_obj = ClassifiedImages(classified=obj, image=str_result)
-            thumb_name = "media/images/classifieds/" + username + "/" + title + "/" + d + "/thumbnails/" + str(index) + ".jpeg" #noqa
-            img_mid_name = "media/images/classifieds/" + username + "/" + title + "/" + d + "/mid-size/" + str(index) + ".jpeg" #noqa
-            style = 'image/resize,m_fill,h_156,w_156'
-            style_mid = 'image/resize,m_pad,h_400'
-            #style_mid = 'image/resize,m_fill,h_400'
+        img_obj = ClassifiedImages(classified=obj, image=str_result)
+        thumb_name = "media/images/classifieds/" + username + "/" + title + "/" + d + "/thumbnails/" + str(index) + ".jpeg" #noqa
+        img_mid_name = "media/images/classifieds/" + username + "/" + title + "/" + d + "/mid-size/" + str(index) + ".jpeg" #noqa
+        style = 'image/resize,m_fill,h_156,w_156'
+        style_mid = 'image/resize,m_pad,h_400'
+        #style_mid = 'image/resize,m_fill,h_400'
 
-        elif app == 'stories':
-            #The image here is full url to the OSS bucket
-            #because of how it is consumed in the front-end
-            img_obj = StoryImages(
-                story=obj,
-                image='https://obrisk.oss-cn-hangzhou.aliyuncs.com/'+ str_result #noqa
+        try:
+            process = "{0}|sys/saveas,o_{1},b_{2}".format(style,
+                oss2.compat.to_string(base64.urlsafe_b64encode(
+                    oss2.compat.to_bytes(thumb_name))),
+                oss2.compat.to_string(
+                    base64.urlsafe_b64encode(
+                        oss2.compat.to_bytes(bucket_name)
+                    )
+                )
             )
-            thumb_name = "media/images/stories/" + username + "/thumbnails/" + d + str(index)
-            style = 'image/resize,m_fill,h_456,w_456'
+            bucket.process_object(str_result, process)
 
-        else:
+            process = "{0}|sys/saveas,o_{1},b_{2}".format(style_mid,
+                oss2.compat.to_string(base64.urlsafe_b64encode(
+                    oss2.compat.to_bytes(img_mid_name))),
+                oss2.compat.to_string(
+                    base64.urlsafe_b64encode(
+                        oss2.compat.to_bytes(bucket_name)
+                        )
+                    )
+                )
+            bucket.process_object(str_result, process)
+
+        except oss2.exceptions.NoSuchKey as e:
+            obj.delete()
             return False
 
-        if env.bool('USE_AWS_S3_MEDIA', default=False):
-            #First verify that the lambda has finish creating thumbnail
-            #Then save
-            #img_obj.image_thumb = thumb_name
+        except Exception as e:
+            #If there is a problem with the thumbnail generation,
+            #our code is wrong
+            if index+1 == tot_img_objs:
+                #To-do 
+                #retry thumbnail creation
+                #Send email to the developers
+                logging.error(e)
+                messages.error(
+                    request, f"We are having difficulty processing your image(s), \
+                    check your post if everything is fine.")
+
+            img_obj.image_thumb = str_result
+            if img_mid_name:
+                img_obj.image_mid_size = str_result
+            img_obj.save()
+            saved_objs += 1
+            continue
+
+        else:
+            img_obj.image_thumb = thumb_name
+            if saved_objs == 0:
+                obj.thumbnail = thumb_name
+                obj.save()
             if img_mid_name:
                 img_obj.image_mid_size = img_mid_name
             img_obj.save()
             saved_objs += 1
-            return  'https://obrisk.oss-cn-hangzhou.aliyuncs.com/'+ images_list[0]
-
-        else:
-            try:
-                process = "{0}|sys/saveas,o_{1},b_{2}".format(style,
-                    oss2.compat.to_string(base64.urlsafe_b64encode(
-                        oss2.compat.to_bytes(thumb_name))),
-                    oss2.compat.to_string(
-                        base64.urlsafe_b64encode(
-                            oss2.compat.to_bytes(bucket_name)
-                        )
-                    )
-                )
-                bucket.process_object(str_result, process)
-
-                if app == 'classifieds':
-                    process = "{0}|sys/saveas,o_{1},b_{2}".format(style_mid,
-                        oss2.compat.to_string(base64.urlsafe_b64encode(
-                            oss2.compat.to_bytes(img_mid_name))),
-                        oss2.compat.to_string(
-                            base64.urlsafe_b64encode(
-                                oss2.compat.to_bytes(bucket_name)
-                                )
-                            )
-                        )
-                    bucket.process_object(str_result, process)
-
-            except oss2.exceptions.NoSuchKey as e:
-                obj.delete()
-                return False
-
-            except Exception as e:
-                #If there is a problem with the thumbnail generation,
-                #our code is wrong
-                if index+1 == tot_img_objs:
-                    #To-do 
-                    #retry thumbnail creation
-                    #Send email to the developers
-                    logging.error(e)
-                    messages.error(
-                        request, f"We are having difficulty processing your image(s), \
-                        check your post if everything is fine.")
-
-                img_obj.image_thumb = str_result
-                if img_mid_name:
-                    img_obj.image_mid_size = str_result
-                img_obj.save()
-                saved_objs += 1
-                continue
-
-            else:
-                img_obj.image_thumb = thumb_name
-                if saved_objs == 0:
-                    obj.thumbnail = thumb_name
-                    obj.save()
-                if img_mid_name:
-                    img_obj.image_mid_size = img_mid_name
-                img_obj.save()
-                saved_objs += 1
 
     if app == 'stories':
         obj.images_count = saved_objs
