@@ -119,7 +119,6 @@ def set_custom_menu(request):
             f"Request failed without any readable response!",
             content_type='text/plain'
         )
-                                                                                            
     except (AttributeError,
             TypeError,
             requests.ConnectionError,
