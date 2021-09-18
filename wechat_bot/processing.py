@@ -1,3 +1,13 @@
+import uuid
+import json
+import base64
+import os
+import datetime
+import logging
+import requests
+
+import oss2
+from slugify import slugify
 from utils.wx_config import get_access_token, get_user_info
 from users.tasks import upload_image
 from users.models import User, WechatUser
@@ -54,8 +64,8 @@ def upload_img(message):
     d = str(datetime.datetime.now())
 
     img_obj = ClassifiedImages(classified=obj, image=str_result)
-    thumb_name = "media/images/classifieds/" + username + "/" + title + "/" + d + "/thumbnails/" + str(index) + ".jpeg" #noqa
-    img_mid_name = "media/images/classifieds/" + username + "/" + title + "/" + d + "/mid-size/" + str(index) + ".jpeg" #noqa
+    thumb_name = "media/images/classifieds/" + slugify(username) + "/" + title + "/" + d + "/thumbnails/" + str(index) + ".jpeg" #noqa
+    img_mid_name = "media/images/classifieds/" + slugify(username) + "/" + title + "/" + d + "/mid-size/" + str(index) + ".jpeg" #noqa
     style = 'image/resize,m_fill,h_156,w_156'
     style_mid = 'image/resize,m_pad,h_400'
     #style_mid = 'image/resize,m_fill,h_400'
