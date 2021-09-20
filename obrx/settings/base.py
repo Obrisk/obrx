@@ -280,6 +280,7 @@ INSTALLED_APPS = [
     'wechat_bot',
     'users',
     'classifieds',
+    'messager',
 ]
 
 MIDDLEWARE = [

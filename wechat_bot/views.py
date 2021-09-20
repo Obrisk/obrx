@@ -12,6 +12,7 @@ from werobot.session.redisstorage import RedisStorage
 from obrx.settings.base import env
 from utils.wx_config import get_access_token
 from users.models import User
+from messager.models import WechatMessage
 from wechat_bot.processing import handle_wechat_user, upload_img
 
 
@@ -36,14 +37,38 @@ def hello(message):
 
 @wxbot.text
 def handle_text(message, session):
-    handle_wechat_user(message.source)
+    user = handle_wechat_user(message.source)
+
+    try:
+        WechatMessage.objects.create(
+            user=user,
+            message=message.content
+        )
+    except Exception as e:
+        logging.error(
+            'Failed to insert WechatMessage to db',
+            exc_info=e
+        )
+
     return ''
 
 
 @wxbot.image
 def handle_img(message, session):
-    handle_wechat_user(message.source)
-    upload_img(message.img)
+    user = handle_wechat_user(message.source)
+
+    img_url = upload_img(message.img, user.name)
+    try:
+        WechatMessage.objects.create(
+            user=user,
+            type="P",
+            media=img_url
+        )
+    except Exception as e:
+        logging.error(
+            'Failed to insert WechatMessage to db',
+            exc_info=e
+        )
     return ''
 
 
@@ -54,11 +79,20 @@ def handle_subscribe(message):
 
 @wxbot.pic_photo_or_album
 def handle_photo_or_album(message):
-    #handle_wechat_user(message.source)
-    
-    for img in message.pic_list
-        img['pic_md5_sum']
-    #upload_img(message)
+    user = handle_wechat_user(message.source)
+
+    for img in message.pic_list:
+        try:
+            WechatMessage.objects.create(
+                user=user,
+                type="P",
+                media= img['pic_md5_sum']
+            )
+        except Exception as e:
+            logging.error(
+                'Failed to insert WechatMessage to db',
+                exc_info=e
+            )
     return ''
 
 
