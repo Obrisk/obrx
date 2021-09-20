@@ -36,18 +36,14 @@ def hello(message):
 
 @wxbot.text
 def handle_text(message, session):
-    userid = message.source
-    handle_wechat_user(userid)
+    handle_wechat_user(message.source)
     return ''
 
 
 @wxbot.image
 def handle_img(message, session):
-    img = message.img
-    userid = message.source
-    handle_wechat_user(userid)
-
-    upload_img(message)
+    handle_wechat_user(message.source)
+    upload_img(message.img)
     return ''
 
 
@@ -58,10 +54,11 @@ def handle_subscribe(message):
 
 @wxbot.pic_photo_or_album
 def handle_photo_or_album(message):
-    userid = message.source
-    handle_wechat_user(userid)
-
-    upload_img(message)
+    #handle_wechat_user(message.source)
+    
+    for img in message.pic_list
+        img['pic_md5_sum']
+    #upload_img(message)
     return ''
 
 

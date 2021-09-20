@@ -50,16 +50,7 @@ def handle_wechat_user(userid):
     )
 
 
-def upload_img(message):
-    if message.type == 'image':
-        url_list = message.url
-    elif message.type == 'pic_photo_or_album_event':
-        url_list = message.pic_list
-
-    logging.error(url_list)
-    for url in url_list:
-        continue
-    return ''
+def upload_img(img_list):
 
     d = str(datetime.datetime.now())
 
@@ -93,9 +84,6 @@ def upload_img(message):
             )
         bucket.process_object(str_result, process)
 
-    except oss2.exceptions.NoSuchKey as e:
-        return ''
-
     except Exception as e:
         #If there is a problem with the thumbnail generation,
         #our code is wrong
@@ -113,7 +101,6 @@ def upload_img(message):
             img_obj.image_mid_size = str_result
         img_obj.save()
         saved_objs += 1
-        continue
 
     else:
         img_obj.image_thumb = thumb_name
@@ -124,3 +111,4 @@ def upload_img(message):
             img_obj.image_mid_size = img_mid_name
         img_obj.save()
         saved_objs += 1
+    return ''
