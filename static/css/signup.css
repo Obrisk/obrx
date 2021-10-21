@@ -80,11 +80,11 @@ h2 {
 }
 
 .heading--primary {
-  font-size: 1.999rem;
+  font-size: 2.999rem;
 }
 
 .heading--secondary {
-  font-size: 1.414rem;
+  font-size: 1.814rem;
 }
 
 .thumbnail__links {
@@ -153,4 +153,8 @@ label {
 }
 .signup__link:focus, .signup__link:hover {
   color: #787878;
+}
+
+#error {
+    color: red;
 }

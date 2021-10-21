@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Obrisk Signup</title>
+    <title>Obrisk Login</title>
     <link rel="stylesheet" type="text/css" href="/static/css/signup.css">
     <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.0.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.bootcdn.net/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet">
@@ -17,8 +17,8 @@
       <h1 class="logo__text">Obrisk</h1>
     </div>
     <div class="thumbnail__content text-center">
-      <h1 class="heading--primary">Welcome Here.</h1>
-      <h2 class="heading--secondary">Are you ready to join the ride?</h2>
+      <h1 class="heading--primary">Welcome Back</h1>
+      <h2 class="heading--secondary"> How is the work Going? </h2>
     </div>
     <div class="thumbnail__links">
       <ul class="list-inline m-b-0 text-center">
@@ -33,47 +33,28 @@
   <div class="container__child signup__form">
     <form action="#">
       <div class="form-group">
-        <label for="username">Name</label>
-        <input class="form-control" type="text" name="username" id="username" placeholder="Full Name" required />
+        <label for="username">Obrisk ID</label>
+        <input class="form-control" type="text" name="username" id="username" placeholder="Company ID" required />
       </div>
       <div class="form-group">
-        <label for="email">Phone</label>
-        <input class="form-control" type="text" name="email" id="email" placeholder="Phone number" required />
+        <label for="email">Username or Phone</label>
+        <input class="form-control" type="text" name="email" id="email" placeholder="" required />
       </div>
 
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input class="form-control" type="text" name="email" id="email" placeholder="email@work.com" required />
-      </div>
-      <div class="form-group">
-        <label for="email">Company</label>
-        <input class="form-control" type="text" name="email" id="email" placeholder="Registered Name" required />
-      </div>
-      <div class="form-group">
-        <label for="email">Position</label>
-        <input class="form-control" type="text" name="email" id="email" placeholder="Eg CTO" required />
-      </div>
       <div class="form-group">
         <label for="password">Password</label>
-        <input class="form-control" type="password" name="password" id="password" placeholder="********" required />
-      </div>
-      <div class="form-group">
-        <label for="passwordRepeat">Repeat Password</label>
-        <input class="form-control" type="password" name="passwordRepeat" id="passwordRepeat" placeholder="********" required />
-      </div>
-      <div class="form-group">
-        <label for="email">Invitation ID</label>
-        <input class="form-control" type="text" name="email" id="email" placeholder="From our BD" required />
+        <input class="form-control" type="password" name="password" id="password" placeholder="" required />
       </div>
 
-      <p id="error">  </p>
+      <p id="error"></p>
+
       <div class="m-t-lg">
         <ul class="list-inline">
           <li>
-            <input class="btn btn--form" type="button" id="submit" value="Register" />
+            <input class="btn btn--form" type="button" id="submit" value="Login" />
           </li>
           <li>
-            <a class="signup__link" href="/login/"> Already have an account?</a>
+            <a class="signup__link" href="/signup/"> New here?</a>
           </li>
         </ul>
       </div>
@@ -86,12 +67,11 @@
 <script type="text/javascript">
   document.addEventListener('DOMContentLoaded', function() {
       const results = document.getElementById('error');
-
       document.getElementById('submit').addEventListener('click', function (event) {
-          results.textContent="Invalid Invitation ID" ;
+          results.textContent="Invalid ID or username or password" ;
           try {
               fetch(
-                  '/signup/', {
+                  '/login/', {
                   method : "POST",
                   body: new FormData(document.querySelector("form")),
                   credentials: 'same-origin',
@@ -109,7 +89,7 @@
               }).catch(error => {
                   console.log('Access Denied');
               }) 
-              
+
           }catch {
               console.log('Access Denied');
           }
@@ -120,4 +100,3 @@
 </script>
 
 </html>
-
