@@ -28,7 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 ROOT_DIR = environ.Path(__file__) - 3  # (obrx/obrx/base.py - 3 = obrisk/)
-APPS_DIR = ROOT_DIR #ROOT_DIR.path("obrisk")
+APPS_DIR = ROOT_DIR
 
 env = environ.Env()
 env.read_env(str(ROOT_DIR.path(".env")))
