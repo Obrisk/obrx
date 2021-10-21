@@ -27,6 +27,10 @@ urlpatterns = [
         TemplateView.as_view(template_name="home.html"),
         name="home"
     ),
+    path('signup/',
+        TemplateView.as_view(template_name="signup.html"),
+        name="signup"
+    ),
     path('admin/', admin.site.urls),
     path('biR07IOg1Xgy66Hpypet-sh903821adua01d3d8l/',
         make_view(wxbot), name="wechat_users"
