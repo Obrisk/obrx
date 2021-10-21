@@ -20,7 +20,7 @@ from classifieds.models import ClassifiedImages
 def handle_wechat_user(userid):
     if WechatUser.objects.filter(
         wechat_openid=userid).count() > 0:
-        return ''
+        return WechatUser.objects.get(wechat_openid=userid)
 
     token = get_access_token()
     if token is None:
@@ -58,7 +58,7 @@ def handle_wechat_user(userid):
         return user
 
     except Exception:
-        return None
+        return ''
 
 
 def upload_img(img, username):

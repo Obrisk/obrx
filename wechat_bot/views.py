@@ -57,7 +57,11 @@ def handle_text(message, session):
 def handle_img(message, session):
     user = handle_wechat_user(message.source)
 
-    img_url = upload_img(message.img, user.name)
+    if user == '':
+        img_url = upload_img(message.img, 'WxAnonyUsr')
+    else:
+        img_url = upload_img(message.img, user.name)
+
     try:
         WechatMessage.objects.create(
             user=user,

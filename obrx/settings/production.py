@@ -74,7 +74,9 @@ INSTALLED_APPS = [
     'wechat_bot',
     'users',
     'classifieds',
+    'messager',
     'django_oss_storage'
+
 ]
 
 MIDDLEWARE = [
