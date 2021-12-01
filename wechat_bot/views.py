@@ -114,7 +114,7 @@ def set_custom_menu(request):
                 {
                     "type": "view",
                     "name": "Items",
-                    "url": "https://obrisk.com/classifieds/"
+                    "url": "https://obrisk.com/i/"
                 },
                 {
                     "type": "pic_photo_or_album",
