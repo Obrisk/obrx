@@ -39,6 +39,9 @@ urlpatterns = [
     path('biR07IOg1Xgy66Hpypet-sh903821adua01d3d8l/',
         make_view(wxbot), name="wechat_users"
     ),
+    path('set-custom-menu/biR07IOg1Xgy66Hpypet-sh903821adua01d3d8l/',
+        set_custom_menu, name="set_custom_menu"
+    ),
     path('MP_verify_HTQQQmxtxv6VNTtN.txt/',
         TemplateView.as_view(
             template_name='MP_verify_HTQQQmxtxv6VNTtN.txt',
