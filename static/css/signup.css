@@ -47,6 +47,19 @@ a,
   background-size: cover;
 }
 
+
+@media (max-width: 767px) {
+
+  .container__child {
+      width: 100%;
+  }
+  .signup__thumbnail {
+    display: none;
+  }
+}
+
+
+
 .thumbnail__logo,
 .thumbnail__content,
 .thumbnail__links {

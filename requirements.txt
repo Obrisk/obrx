@@ -1,6 +1,6 @@
 
 argon2-cffi>=18.1.0  # https://github.com/hynek/argon2_cffi
-psycopg2>=2.7.7  # https://github.com/psycopg/psycopg2
+psycopg2-binary>=2.7.7  # https://github.com/psycopg/psycopg2
 awesome-slugify>=1.6.5  # https://github.com/dimka665/awesome-slugify
 pytz>=2018.5  # https://github.com/stub42/pytz
 redis>=2.10.6  # https://github.com/antirez/redis
@@ -33,16 +33,17 @@ phonenumbers>=p8.10.4  #https://github.com/stefanfoulis/django-phonenumber-field
 aliyun-python-sdk-geoip==1.0.4 #https://pypi.org/project/aliyun-python-sdk-geoip
 celery>=4.3.0 #https://github.com/celery/celery
 
+
 #Below is a fork for django-elasticsearch-dsl==7.1.0 #https://github.com/sabricot/django-elasticsearch-dsl
 git+https://github.com/elkd/django-es-dsl.git
 
-
-gevent==1.2.2  # https://github.com/gevent/gevent
-gunicorn==19.9.0  #https://gunicorn.org/
-uvicorn==0.6.1 #https://github.com/encode/uvicorn
+#UNCOMMENT THESE FOR PRODUCTION
+#gevent==1.2.2  # https://github.com/gevent/gevent
+#gunicorn==19.9.0  #https://gunicorn.org/
+#uvicorn==0.6.1 #https://github.com/encode/uvicorn
 
 #https://serverfault.com/questions/635100/django-conn-max-age-persists-connections-but-doesnt-reuse-them-with-postgresq
-django-db-geventpool==3.1.0   #https://github.com/jneight/django-db-geventpool
+#django-db-geventpool==3.1.0   #https://github.com/jneight/django-db-geventpool
 
 sentry_sdk==1.0.0 #https://sentry.io/obrisk/obrisk-e7/getting-started/python-django/
 
